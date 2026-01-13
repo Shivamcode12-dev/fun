@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meme Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #cffff3;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: rgba(255,255,255,0.06);
+            border: 2px solid rgba(127,255,212,0.45);
+            border-radius: 20px;
+            padding: 35px 30px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+            text-align: center;
+        }
+        h1 {
+            color: #7fffd4;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+        }
+        #generateBtn {
+            width: 100%;
+            padding: 14px;
+            font-size: 1.1rem;
+            border-radius: 28px;
+            border: none;
+            background: #7fffd4;
+            color: #003333;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 20px;
+        }
+        #generateBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(127,255,212,0.4);
+        }
+        #meme-container {
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        #meme-img {
+            max-width: 100%;
+            max-height: 500px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            display: none;
+        }
+        #meme-title {
+            margin-bottom: 15px;
+            color: #a7ffeb;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .loading {
+            font-size: 1.2rem;
+            color: #facc15;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #7fffd4;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .back-btn:hover { text-decoration: underline; }
+        #downloadBtn {
+            margin-top: 15px;
+            padding: 10px 24px;
+            background: transparent;
+            border: 2px solid #7fffd4;
+            color: #7fffd4;
+            border-radius: 28px;
+            cursor: pointer;
+            font-weight: 600;
+            display: none;
+            transition: all 0.3s ease;
+        }
+        #downloadBtn:hover {
+            background: #7fffd4;
+            color: #003333;
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px 20px;
+            }
+            h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<a href="../index.html" class="back-btn">← Back</a>
+
+<div class="container">
+    <h1>🤪 Random Meme</h1>
+    <button id="generateBtn">Get Meme 🤣</button>
+    
+    <div id="meme-container">
+        <h3 id="meme-title"></h3>
+        <img id="meme-img" src="" alt="Meme">
+        <button id="downloadBtn">Download 📥</button>
+    </div>
+</div>
+
+<script>
+    const generateBtn = document.getElementById('generateBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const memeImg = document.getElementById('meme-img');
+    const memeTitle = document.getElementById('meme-title');
+    const memeContainer = document.getElementById('meme-container');
+
+    async function getMeme() {
+        // Show loading state
+        memeTitle.innerText = "";
+        memeImg.style.display = "none";
+        downloadBtn.style.display = "none";
+        memeContainer.innerHTML = '<div class="loading">Fetching fresh meme... 🍳</div>';
+
+        try {
+            const response = await fetch('https://meme-api.com/gimme');
+            const data = await response.json();
+
+            // Restore container structure
+            memeContainer.innerHTML = '';
+            memeContainer.appendChild(memeTitle);
+            memeContainer.appendChild(memeImg);
+            memeContainer.appendChild(downloadBtn);
+
+            memeTitle.innerText = data.title;
+            memeImg.src = data.url;
+            memeImg.onload = () => {
+                memeImg.style.display = "block";
+                downloadBtn.style.display = "inline-block";
+            };
+        } catch (error) {
+            memeContainer.innerHTML = '<div style="color:#ff3b3b">Failed to load meme. Try again! 😢</div>';
+        }
+    }
+
+    generateBtn.addEventListener('click', getMeme);
+
+    downloadBtn.addEventListener('click', async () => {
+        try {
+            const response = await fetch(memeImg.src);
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "meme.jpg";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        } catch (err) {
+            console.error("Download failed", err);
+            window.open(memeImg.src, '_blank');
+        }
+    });
+</script>
+
+</body>
+</html>

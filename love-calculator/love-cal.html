@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #cffff3;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            background: rgba(255,255,255,0.06);
+            border: 2px solid rgba(127,255,212,0.45);
+            border-radius: 20px;
+            padding: 35px 30px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+        }
+        .title {
+            color: #7fffd4;
+            margin-bottom: 25px;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section h2 {
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            color: #a7ffeb;
+        }
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            border-radius: 28px;
+            border: 1px solid rgba(127,255,212,0.3);
+            background-color: rgba(0,0,0,0.2);
+            color: #cffff3;
+            outline: none;
+            font-size: 0.95rem;
+            font-family: 'Poppins', sans-serif;
+        }
+        input::placeholder {
+            color: rgba(207, 255, 243, 0.6);
+        }
+        input[type="date"] {
+            color-scheme: dark;
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 28px;
+            border: none;
+            background: #7fffd4;
+            color: #003333;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            font-size: 1.1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(127,255,212,0.4);
+        }
+        #warning {
+            color: #facc15; /* yellow from joke finder */
+            margin-top: 15px;
+            font-weight: 500;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #fff;
+        }
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #7fffd4;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .back-btn:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<a href="../Main_page/index.html" class="back-btn">← Back</a>
+
+<div class="container">
+
+    <h1 class="title">💖 Love Calculator 💖</h1>
+
+    <div class="section">
+        <h2>👦 Male</h2>
+        <input id="male_name" placeholder="Name">
+        <input id="male_dob" type="date">
+    </div>
+
+    <div class="section">
+        <h2>👧 Female</h2>
+        <input id="female_name" placeholder="Name">
+        <input id="female_dob" type="date">
+    </div>
+
+    <button onclick="processFunc()" class="btn">Calculate ❤️</button>
+
+    <div id="warning"></div>
+    <div id="result">Love Percentage:</div>
+</div>
+
+<script src="love-script.js"></script>
+</body>
+</html>

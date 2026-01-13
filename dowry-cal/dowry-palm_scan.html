@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Palm Scan - Reveal Your Destiny</title>
+
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', sans-serif;
+        overflow: hidden;
+        background-image: url("https://t3.ftcdn.net/jpg/17/19/52/80/360_F_1719528093_c131uRhpYZvgZAsAbEiK9eHwDJgnuBDW.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    section {
+        background-color: rgba(0,0,0,0.6);
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 1.5em;
+        color: white;
+    }
+
+    .heading {
+        font-size: 2.5em;
+        color: #00aaff;
+        text-shadow: 0 0 15px rgba(0,170,255,0.7);
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .video-container {
+        position: relative;
+        width: 800px;
+        height: 700px;
+        border: 2px solid #00aaff;
+        border-radius: 15px;
+        box-shadow: 0 0 25px rgba(0,170,255,0.6), inset 0 0 15px rgba(0,170,255,0.3);
+        overflow: hidden;
+        background-color: #111;
+        display: none;
+    }
+
+    #webcam, #uploadedImage {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transform: scaleX(-1);
+    }
+
+    .scan-line {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, transparent, #00aaff, transparent);
+        box-shadow: 0 0 10px #00aaff;
+        display: none;
+    }
+
+    .scan-line.scanning {
+        display: block;
+        animation: scan 3s linear infinite;
+    }
+
+    @keyframes scan {
+        0% { top: 0; }
+        50% { top: 100%; }
+        100% { top: 0; }
+    }
+
+    .scanBtn, .optionBtn {
+        border: 1px solid #00aaff;
+        background-color: transparent;
+        color: white;
+        border-radius: 10px;
+        padding: 0.8em 1.5em;
+        font-size: 1.2em;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .scanBtn:hover:not(:disabled),
+    .optionBtn:hover {
+        background-color: rgba(0,170,255,0.2);
+        box-shadow: 0 0 20px rgba(0,170,255,0.8);
+    }
+
+    .scanBtn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    #predictionResult {
+        font-size: 1.2em;
+        color: #00ffaa;
+        text-shadow: 0 0 10px rgba(0,255,170,0.7);
+        min-height: 1.5em;
+        text-align: center;
+    }
+</style>
+
+</head>
+<body>
+
+<section>
+    <h1 class="heading">Palm Scan - Reveal Your Destiny</h1>
+
+    <div style="display:flex; gap:20px;">
+        <button class="optionBtn" onclick="startWebcamScan()">Live Palm Scan</button>
+        <button class="optionBtn" onclick="document.getElementById('fileInput').click()">Upload Palm Image</button>
+        <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="loadUploadedPalm(event)">
+    </div>
+
+    <div class="video-container" id="scanBox">
+        <video id="webcam" autoplay playsinline></video>
+        <img id="uploadedImage" style="display:none;">
+        <div id="scanLine" class="scan-line"></div>
+    </div>
+
+    <button id="analyzeBtn" class="scanBtn" style="display:none;">Analyze Palm</button>
+    <p id="predictionResult"></p>
+</section>
+
+<script>
+const scanBox = document.getElementById('scanBox');
+const webcamElement = document.getElementById('webcam');
+const uploadedImage = document.getElementById('uploadedImage');
+const scanLine = document.getElementById('scanLine');
+const analyzeBtn = document.getElementById('analyzeBtn');
+const predictionResult = document.getElementById('predictionResult');
+
+// Start webcam palm scan
+function startWebcamScan() {
+    scanBox.style.display = "block";
+    analyzeBtn.style.display = "block";
+
+    uploadedImage.style.display = "none";
+    webcamElement.style.display = "block";
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+            webcamElement.srcObject = stream;
+            webcamElement.play();
+        })
+        .catch(() => alert("Camera access denied"));
+}
+
+// Upload palm image
+function loadUploadedPalm(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    scanBox.style.display = "block";
+    analyzeBtn.style.display = "block";
+
+    webcamElement.style.display = "none";
+    uploadedImage.style.display = "block";
+
+    uploadedImage.src = URL.createObjectURL(file);
+}
+
+// Save palm as img.png
+function savePalmImage() {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = scanBox.clientWidth;
+    canvas.height = scanBox.clientHeight;
+
+    if (webcamElement.style.display !== "none") {
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+        ctx.drawImage(webcamElement, 0, 0, canvas.width, canvas.height);
+    } else {
+        ctx.drawImage(uploadedImage, 0, 0, canvas.width, canvas.height);
+    }
+
+    const link = document.createElement("a");
+    link.href = canvas.toDataURL("image/png");
+    link.download = "img.png";
+    link.click();
+}
+
+// Start scanning
+analyzeBtn.addEventListener('click', () => {
+    predictionResult.textContent = "Scanning...";
+    analyzeBtn.disabled = true;
+
+    scanLine.classList.add('scanning');
+
+    setTimeout(() => {
+        scanLine.classList.remove('scanning');
+        savePalmImage();
+
+        predictionResult.textContent = "Palm scan complete.";
+
+        setTimeout(() => {
+            // Generate random score between 1 and 20
+            const score = Math.floor(Math.random() * 20) + 1;
+            window.location.href = `dowry.html?score=${score}`;
+        }, 1000);
+
+    }, 15000); // 15 seconds
+});
+</script>
+
+</body>
+</html>

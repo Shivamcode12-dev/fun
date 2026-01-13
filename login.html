@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login • Fun.com</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #cffff3;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .login-container {
+      background: rgba(255,255,255,0.06);
+      border: 2px solid rgba(127,255,212,0.45);
+      border-radius: 20px;
+      padding: 35px 30px;
+      width: 100%;
+      max-width: 380px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+    }
+    .login-container h1 {
+      color: #7fffd4;
+      margin-bottom: 10px;
+    }
+    .login-container p {
+      font-size: 0.9rem;
+      opacity: 0.85;
+      margin-bottom: 25px;
+    }
+    .login-container input {
+      width: 100%;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      border-radius: 28px;
+      border: none;
+      outline: none;
+      font-size: 0.95rem;
+    }
+    .login-container button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 28px;
+      border: none;
+      background: #7fffd4;
+      color: #003333;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .login-container button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(127,255,212,0.4);
+    }
+    .extras {
+      margin-top: 18px;
+      font-size: 0.85rem;
+      opacity: 0.9;
+    }
+    .extras a {
+      color: #7fffd4;
+      text-decoration: none;
+      margin: 0 6px;
+    }
+    @media (max-width: 420px) {
+      .login-container { padding: 28px 22px; }
+    }
+  .google-btn {
+      width: 100%;
+      padding: 11px;
+      border-radius: 28px;
+      border: 2px solid rgba(127,255,212,0.45);
+      background: rgba(255,255,255,0.08);
+      color: #eafff8;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .google-btn img {
+      width: 18px;
+      height: 18px;
+    }
+    .google-btn:hover {
+      background: rgba(127,255,212,0.18);
+      transform: translateY(-2px);
+    }
+    footer {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 1rem;
+      color: rgba(127, 255, 212, 0.6);
+      padding-bottom: 20px;
+    }
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      color: #7fffd4;
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    .back-btn:hover { text-decoration: underline; }
+  </style>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+  <script>
+    // 🔹 STEP 1: Replace with your Firebase project config
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const provider = new firebase.auth.GoogleAuthProvider();
+
+    // 🔹 Google Login Function (WORKING)
+    function googleLogin() {
+      auth.signInWithPopup(provider)
+        .then((result) => {
+          const user = result.user;
+          alert("Welcome " + user.displayName);
+          window.location.href = "index.html"; // redirect after login
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
+    }
+  </script>
+</head>
+<body>
+
+  <a href="index.html" class="back-btn">← Back</a>
+
+  <div class="login-container">
+    <h1>👤 Login</h1>
+    <p>Welcome back to Fun.com</p>
+
+    <input type="email" placeholder="Email address" />
+    <input type="password" placeholder="Password" />
+    <button>Login</button>
+
+    <div style="margin:18px 0; opacity:0.8; font-size:0.85rem;">or</div>
+
+    <button class="google-btn" onclick="googleLogin()">
+      <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google" />
+      Continue with Google
+    </button>
+
+    <div class="extras">
+      <a href="#">Forgot password?</a> • <a href="#">Sign up</a>
+    </div>
+  </div>
+
+  <footer>
+    Designed for fun • Fun.com 😄
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pickup Line Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #cffff3;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: rgba(255,255,255,0.06);
+            border: 2px solid rgba(127,255,212,0.45);
+            border-radius: 20px;
+            padding: 35px 30px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+        }
+        h1 {
+            text-align: center;
+            color: #7fffd4;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+        }
+        .section-title {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #a7ffeb;
+            font-weight: 600;
+        }
+        .category-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        .category-option {
+            position: relative;
+        }
+        .category-option input {
+            display: none;
+        }
+        .category-option label {
+            display: block;
+            padding: 10px 20px;
+            background: rgba(0,0,0,0.2);
+            border: 1px solid #4f46e5;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #cffff3;
+            font-size: 0.95rem;
+            user-select: none;
+        }
+        .category-option input:checked + label {
+            background: #7fffd4;
+            color: #003333;
+            border-color: #7fffd4;
+            font-weight: 600;
+            box-shadow: 0 0 15px rgba(127, 255, 212, 0.4);
+            transform: translateY(-2px);
+        }
+        .category-option label:hover {
+            border-color: #facc15;
+        }
+        #generateBtn {
+            width: 100%;
+            padding: 14px;
+            font-size: 1.1rem;
+            border-radius: 28px;
+            border: none;
+            background: #7fffd4;
+            color: #003333;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        #generateBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(127,255,212,0.4);
+        }
+        #output {
+            margin-top: 25px;
+            min-height: 20px;
+        }
+        .joke-card {
+            background: #020617;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            text-align: center;
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .copy-btn {
+            margin-top: 15px;
+            padding: 6px 16px;
+            background: transparent;
+            border: 1px solid #7fffd4;
+            color: #7fffd4;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+        .copy-btn:hover {
+            background: #7fffd4;
+            color: #003333;
+        }
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #7fffd4;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .back-btn:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<a href="../Main_page/index.html" class="back-btn">← Back</a>
+
+<div class="container">
+    <h1>😏 Pickup Line Generator</h1>
+
+    <div class="section-title">Select a Vibe</div>
+    
+    <div class="category-grid">
+        <div class="category-option"><input type="radio" name="category" id="cat1" value="romantic" checked><label for="cat1">Romantic 😍</label></div>
+        <div class="category-option"><input type="radio" name="category" id="cat2" value="funny"><label for="cat2">Funny 😂</label></div>
+        <div class="category-option"><input type="radio" name="category" id="cat3" value="cheesy"><label for="cat3">Cheesy 🧀</label></div>
+        <div class="category-option"><input type="radio" name="category" id="cat4" value="flirty"><label for="cat4">Flirty 😉</label></div>
+        <div class="category-option"><input type="radio" name="category" id="cat5" value="clever"><label for="cat5">Clever 🤓</label></div>
+        <div class="category-option"><input type="radio" name="category" id="cat6" value="complimentary"><label for="cat6">Complimentary 🍭</label></div>
+    </div>
+
+    <button id="generateBtn">✨ Generate Rizz</button>
+
+    <div id="output"></div>
+</div>
+
+<script>
+    const generateBtn = document.getElementById('generateBtn');
+    const output = document.getElementById('output');
+
+    generateBtn.addEventListener('click', async () => {
+        const category = document.querySelector('input[name="category"]:checked').value;
+        
+        output.innerHTML = '<div style="text-align:center; opacity:0.8;">Cooking up some rizz... 🍳</div>';
+        
+        try {
+            const response = await fetch(`https://rizzapi.vercel.app/random`);
+            const data = await response.json();
+            
+            // API usually returns { text: "..." }
+            const line = data.text || data.pickup || "No line found.";
+            
+            output.innerHTML = `
+            <div class="joke-card">
+                <div id="jokeText" style="font-size: 1.1rem; line-height: 1.5;">${line}</div>
+                <button id="copyBtn" class="copy-btn">📋 Copy</button>
+            </div>`;
+            
+            document.getElementById("copyBtn").addEventListener("click", () => {
+                const text = document.getElementById("jokeText").innerText;
+                navigator.clipboard.writeText(text).then(() => {
+                    const btn = document.getElementById("copyBtn");
+                    btn.textContent = "✅ Copied!";
+                    setTimeout(() => btn.textContent = "📋 Copy", 2000);
+                });
+            });
+            
+        } catch (error) {
+            output.innerHTML = '<div style="text-align:center; color:#facc15;">Failed to fetch. You have to use your own rizz for now! 😬</div>';
+        }
+    });
+</script>
+
+</body>
+</html>

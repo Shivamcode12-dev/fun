@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dowry Calculator (Awareness)</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+    * { box-sizing: border-box; }
+    body {
+        margin: 0;
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #cffff3;
+        padding: 20px;
+    }
+
+    .calculator {
+        background: rgba(255,255,255,0.06);
+        border: 2px solid rgba(127,255,212,0.45);
+        border-radius: 20px;
+        padding: 35px 30px;
+        width: 100%;
+        max-width: 450px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 1.8rem;
+        color: #7fffd4;
+    }
+
+    p {
+        text-align: center;
+        font-size: 0.9rem;
+        opacity: 0.9;
+        margin-bottom: 25px;
+    }
+
+    .field {
+        margin-bottom: 18px;
+    }
+
+    label {
+        display: block;
+        font-size: 0.95rem;
+        margin-bottom: 6px;
+        color: #a7ffeb;
+    }
+
+    select, input {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 28px;
+        border: 1px solid rgba(127,255,212,0.3);
+        background-color: rgba(0,0,0,0.2);
+        color: #cffff3;
+        outline: none;
+        font-size: 0.95rem;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    select option {
+        background-color: #203a43;
+        color: #cffff3;
+    }
+
+    video {
+        width: 100%;
+        border-radius: 10px;
+        margin-bottom: 8px;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        font-size: 1.1rem;
+        border-radius: 28px;
+        border: none;
+        cursor: pointer;
+        background: #7fffd4;
+        color: #003333;
+        font-weight: 600;
+        margin-top: 15px;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    #palmScanbtn {
+        background: rgba(127,255,212,0.1);
+        border: 1px solid #7fffd4;
+        color: #7fffd4;
+        margin-top: 0;
+    }
+
+    button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(127,255,212,0.4);
+    }
+
+    .result {
+        margin-top: 20px;
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #fff;
+    }
+
+    .disclaimer {
+        margin-top: 20px;
+        font-size: 0.8rem;
+        opacity: 0.6;
+        text-align: center;
+    }
+    .back-btn {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        color: #7fffd4;
+        text-decoration: none;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+    .back-btn:hover { text-decoration: underline; }
+</style>
+</head>
+
+<body>
+
+<a href="../index.html" class="back-btn">← Back</a>
+
+<div class="calculator">
+    <h1>Dowry Calculator</h1>
+    <p>Educational & awareness purpose only</p>
+
+    <div class="field">
+        <label>Education Level</label>
+        <select id="education">
+            <option value="0">Select</option>
+            <option value="200000">Graduate</option>
+            <option value="400000">Post Graduate</option>
+            <option value="700000">Doctor / Engineer</option>
+        </select>
+    </div>
+
+    <div class="field">
+        <label>Profession</label>
+        <select id="profession">
+            <option value="0">Select</option>
+            <option value="200000">Private Job</option>
+            <option value="500000">Government Job</option>
+            <option value="800000">Business</option>
+        </select>
+    </div>
+
+    <div class="field">
+        <label>Monthly Income (₹)</label>
+        <input type="number" id="income" placeholder="e.g. 50000">
+    </div>
+    
+    <div class="field">
+        <label>Family Status</label>
+        <select id="status">
+            <option value="0">Select</option>
+            <option value="100000">Middle Class</option>
+            <option value="300000">Upper Middle Class</option>
+            <option value="600000">Rich</option>
+        </select>
+    </div>
+    <div class = 'field'>
+        <label>Palm Score*Optional</label>
+        <button id = 'palmScanbtn'>Scan Palm</button>
+    </div>
+    
+    <button onclick="calculateDowry()">Calculate</button>
+
+    <div class="result" id="result"></div>
+
+    <div class="disclaimer">
+        Dowry is a social evil and punishable by law.  
+        Palm scanning shown here is only a simulation.
+    </div>
+</div>
+
+<script>
+document.getElementById('palmScanbtn').addEventListener('click', function() {
+    window.location.href = 'dowry-palm_scan.html';
+});
+
+// Check for palm score in URL (from scan page)
+const urlParams = new URLSearchParams(window.location.search);
+const scannedScore = urlParams.get('score');
+let palmScore = scannedScore ? parseInt(scannedScore) : 2; // Default to 2 if not scanned
+
+if (scannedScore) {
+    const btn = document.getElementById('palmScanbtn');
+    btn.innerText = `Scan Complete (Score: ${palmScore}) ✅`;
+    btn.style.borderColor = '#7fffd4';
+    btn.style.background = 'rgba(127,255,212,0.2)';
+}
+
+function calculateDowry() {
+    let educationVal = document.getElementById("education").value;
+    let professionVal = document.getElementById("profession").value;
+    let incomeVal = document.getElementById("income").value;
+    let statusVal = document.getElementById("status").value;
+
+    if (educationVal === "0" || professionVal === "0" || incomeVal === "" || statusVal === "0") {
+        document.getElementById("result").innerText = "⚠️ Please fill all fields!";
+        document.getElementById("result").style.color = "#facc15";
+        return;
+    }
+
+    document.getElementById("result").style.color = "#fff";
+
+    let education = parseInt(educationVal);
+    let profession = parseInt(professionVal);
+    let income = parseInt(incomeVal);
+    let status = parseInt(statusVal);
+
+    let incomeFactor = income * 12 * 0.1;
+    
+    // Palm score multiplier (e.g., 25,000 per point) to make it affect the total significantly
+    let palmValue = palmScore * 25000;
+
+    let total = education + profession + incomeFactor + status + palmValue;
+
+    document.getElementById("result").innerText =
+        "Estimated Amount: ₹" + total.toLocaleString("en-IN");
+}
+</script>
+
+</body>
+</html>
